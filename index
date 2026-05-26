@@ -1,1 +1,56 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Answer</title>
+    <style>
+        body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: 'Comic Sans MS', cursive, sans-serif; background-color: #ffeaa7; text-align: center; }
+        button { padding: 40px; font-size: 2rem; background: #fd79a8; color: white; border: 8px solid #d63031; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 0 #b71c1c; }
+        button:active { transform: translateY(10px); box-shadow: none; }
+        #answer { margin-top: 50px; font-size: 2rem; font-weight: bold; color: #d63031; }
+    </style>
+</head>
+<body>
+
+    <button onclick="go()">ASK ME!</button>
+    <div id="answer"></div>
+
+    <script>
+        function go() {
+            const text = "my butt crack";
+            document.getElementById('answer').innerText = text;
+
+            // 1. Voice Setup (Try to find a silly voice)
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
+            // Try to pick a voice that sounds less like a robot and more like a cartoon
+            utterance.voice = voices.find(v => v.name.includes('Google')) || voices[0];
+            utterance.pitch = 0.5; // Deep and silly
+            utterance.rate = 0.9;
+            
+            // 2. Cartoon Fart Setup
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            // "Square" wave is much buzzier and more cartoonish
+            osc.type = 'square'; 
+            osc.frequency.setValueAtTime(40, ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 1.2);
+            
+            gain.gain.setValueAtTime(0.5, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.2);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            // 3. Trigger both
+            osc.start();
+            window.speechSynthesis.speak(utterance);
+            osc.stop(ctx.currentTime + 1.2);
+        }
+    </script>
+</body>
+</html>
